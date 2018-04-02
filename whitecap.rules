@@ -1,0 +1,56 @@
+# $Id: local.rules,v 1.11 2004/07/23 20:15:44 bmc Exp $
+# ----------------
+# LOCAL RULES
+# ----------------
+# This file intentionally does not come with signatures.  Put your local
+# additions here.
+# IP of hosts to ignore for ICMP Whitecap rules
+# Add IP addresses to ICMP_SRC_HOSTS if you have setup scanning devices that use ICMP pings to do host checks
+# and the ICMP packet uses a different payload than whitelisted below
+# This is often needed for systems like load balancers that constantly ping back end nodes to make sure they are
+# online
+ipvar ICMP_SRC_HOSTS_IGNORE [192.168.0.1]
+# Add IP addresses to ICMP_DST_HOSTS if you have special systems that a custom ICMP ping gets generated against
+ipvar ICMP_DST_HOSTS_IGNORE [192.168.0.1]
+
+# ICMP Whitecap rules
+pass icmp any any -> any any (msg:"Whitecap: OSX or Linux ICMP Echo Request"; icode:0; itype:8; dsize:56; content:"!\"#$%&'()*+,-./01234567"; classtype:misc-activity; sid:5110001; rev:1;)
+pass icmp any any -> any any (msg:"Whitecap: OSX or Linux ICMP Echo Reply"; icode:0; itype:0; dsize:56; content:"!\"#$%&'()*+,-./01234567"; classtype:misc-activity; sid:5110002; rev:1;)
+pass icmp any any -> any any (msg:"Whitecap: Windows XP/7/8 ICMP Echo Request"; icode:0; itype:8; dsize:32; content:"abcdefghijklmnopqrstuvwabcdefghi"; classtype:misc-activity; sid:5110003; rev:1; nocase;)
+pass icmp any any -> any any (msg:"Whitecap: Windows XP/7/8 ICMP Echo Reply"; icode:0; itype:0; dsize:32; content:"abcdefghijklmnopqrstuvwabcdefghi"; classtype:misc-activity; sid:5110004; rev:1; nocase;)
+pass icmp any any -> any any (msg:"Whitecap: Nmap ICMP Echo Request"; icode:0; itype:8; dsize:0; classtype:misc-activity; sid:5110005; rev:1;)
+pass icmp any any -> any any (msg:"Whitecap: Nmap ICMP Echo Reply"; icode:0; itype:0; dsize:0; classtype:misc-activity; sid:5110006; rev:1;)
+pass icmp any any -> any any (msg:"Whitecap: Group Policy Slow Link Detection"; icode:0; itype:8; dsize:>1400; content:"WANG2"; classtype:misc-activity; sid:5110007; rev:1;)
+pass icmp any any -> any any (msg:"Whitecap: Group Policy Slow Link Detection"; icode:0; itype:0; dsize:>1400; content:"WANG2"; classtype:misc-activity; sid:5110008; rev:1;)
+pass icmp any any -> any any (msg:"Whitecap: Solarwinds Status Query"; icode:0; itype:8; dsize:23; content:"SolarWinds Status Query"; classtype:misc-activity; sid:5110009; rev:1;)
+pass icmp any any -> any any (msg:"Whitecap: Solarwinds Status Query"; icode:0; itype:0; dsize:23; content:"SolarWinds Status Query"; classtype:misc-activity; sid:5110010; rev:1;)
+pass icmp any any -> any any (msg:"Whitecap: Domain Controller ICMP Traffic"; icode:0; itype:8; dsize:1; content:"?"; classtype:misc-activity; sid:5110011; rev:1;)
+pass icmp any any -> any any (msg:"Whitecap: Domain Controller ICMP Traffic"; icode:0; itype:0; dsize:1; content:"?"; classtype:misc-activity; sid:5110012; rev:1;)
+pass icmp any any -> any any (msg:"Whitecap: McAfee ICMP ping Request"; icode:0; itype:8; dsize:36; content:"EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE"; offset:3; classtype:misc-activity; sid:5110013; rev:2;)
+pass icmp any any -> any any (msg:"Whitecap: McAfee ICMP ping Reply"; icode:0; itype:0; dsize:36; content:"EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE"; offset:3; classtype:misc-activity; sid:5110014; rev:1;)
+pass icmp any any -> any any (msg:"Whitecap: Lots of Xs"; icode:0; itype:8; dsize:32; content:"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"; classtype:misc-activity; sid:5110015; rev:1;)
+pass icmp any any -> any any (msg:"Whitecap: Lots of Xs"; icode:0; itype:0; dsize:32; content:"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"; classtype:misc-activity; sid:5110016; rev:1;)
+pass icmp any any -> any any (msg:"Whitecap: DHCP ICMP Duplicate IP Check"; icode:0; itype:8; dsize:11; content:"DhcpIcmpChk"; classtype:misc-activity; sid:5110017; rev:1;)
+pass icmp any any -> any any (msg:"Whitecap: DHCP ICMP Duplicate IP Check"; icode:0; itype:0; dsize:11; content:"DhcpIcmpChk"; classtype:misc-activity; sid:5110018; rev:1;)
+pass icmp any any -> any any (msg:"Whitecap: Solarwinds ICMP Version 5"; icode:0; itype:8; dsize:<80; content:"SolarWinds.Net ICMP Version 5.0.4.16Copyright  1995-2005 SolarWinds.Net"; classtype:misc-activity; sid:5110019; rev:1;)
+pass icmp any any -> any any (msg:"Whitecap: Solarwinds ICMP Version 5"; icode:0; itype:0; dsize:<80; content:"SolarWinds.Net ICMP Version 5.0.4.16Copyright  1995-2005 SolarWinds.Net"; classtype:misc-activity; sid:5110020; rev:1;)
+pass icmp any any -> any any (msg:"Whitecap: Solarwinds Sonar ICMP Scan"; icode:0; itype:8; dsize:24; content:"Orion Network Sonar Scan"; classtype:misc-activity; sid:5110021; rev:1;)
+pass icmp any any -> any any (msg:"Whitecap: Solarwinds Sonar ICMP Scan"; icode:0; itype:0; dsize:24; content:"Orion Network Sonar Scan"; classtype:misc-activity; sid:5110022; rev:1;)
+pass icmp any any -> $DNS_SERVERS any (msg:"Whitecap: ICMP to DNS Servers"; icode:0; itype:8; dsize:<57; classtype:misc-activity; threshold:type limit, track by_src, count 1, seconds 60; sid:5110500; rev:2;) 
+pass icmp any any -> $DNS_SERVERS any (msg:"Whitecap: ICMP to DNS Servers"; icode:0; itype:0; dsize:<57; classtype:misc-activity; threshold:type limit, track by_src, count 1, seconds 60; sid:5110501; rev:2;) 
+pass icmp any any -> any any (msg:"Whitecap: Domain controller to domain controller"; icode:0; itype:8; dsize:32; content:"|00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00|"; classtype:misc-activity; threshold:type limit, track by_src, count 1, seconds 60; sid:5110502; rev:2;)
+pass icmp any any -> any any (msg:"Whitecap: Domain controller to domain controller"; icode:0; itype:0; dsize:32; content:"|00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00|"; classtype:misc-activity; threshold:type limit, track by_src, count 1, seconds 60; sid:5110503; rev:2;)
+pass icmp any any -> any any (msg:"Whitecap: All As"; icode:0; itype:8; dsize:64; content:"|AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA|"; classtype:misc-activity; sid:5110504; rev:1;)
+pass icmp any any -> any any (msg:"Whitecap: All As"; icode:0; itype:0; dsize:64; content:"|AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA|"; classtype:misc-activity; sid:5110505; rev:1;)
+pass icmp any any -> any any (msg:"Whitecap: All 0s"; icode:0; itype:8; dsize:56; content:"|00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00|"; classtype:misc-activity; sid:5110506; rev:1;)
+pass icmp any any -> any any (msg:"Whitecap: All 0s"; icode:0; itype:0; dsize:56; content:"|00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00|"; classtype:misc-activity; sid:5110507; rev:1;)
+pass icmp [$ICMP_SRC_HOSTS_IGNORE] any -> any any (msg:"ICMP Pass: Ignore Hosts"; icode:0; itype:8; classtype:misc-activity; sid:5111000; rev:1;)
+pass icmp [$ICMP_SRC_HOSTS_IGNORE] any -> any any (msg:"ICMP Pass: Ignore Hosts"; icode:0; itype:0; classtype:misc-activity; sid:5111001; rev:1;)
+pass icmp any any -> [$ICMP_DST_HOSTS_IGNORE] any (msg:"ICMP Pass: Ignore Hosts"; icode:0; itype:8; classtype:misc-activity; sid:5111002; rev:1;)
+pass icmp any any -> [$ICMP_DST_HOSTS_IGNORE] any (msg:"ICMP Pass: Ignore Hosts"; icode:0; itype:0; classtype:misc-activity; sid:5111003; rev:1;)
+alert icmp any any -> any any (msg:"Whitecap Other Echo Request"; icode:0; itype:8; dsize:>19; classtype:misc-activity; sid:5112000; rev:3;)
+alert icmp any any -> any any (msg:"Whitecap Other Echo Reply"; icode:0; itype:0; dsize:>19; classtype:misc-activity; sid:5112001; rev:3;)
+alert icmp any any -> any any (msg:"Whitecap Other Echo Request"; icode:0; itype:8; dsize:<20; classtype:misc-activity; threshold:type limit, track by_src, count 4, seconds 60; sid:5112002; rev:3;)
+alert icmp any any -> any any (msg:"Whitecap Other Echo Reply"; icode:0; itype:0; dsize:<20; classtype:misc-activity; threshold:type limit, track by_src, count 4, seconds 60; sid:5112003; rev:3;)
+alert icmp any any -> any any (msg:"Whitecap Echo Request Payload > 100 bytes"; icode:0; itype:8; dsize:>100; classtype:misc-activity; sid:5113000; rev:1;)
+alert icmp any any -> any any (msg:"Whitecap Echo Reply Payload > 100 bytes"; icode:0; itype:0; dsize:>100; classtype:misc-activity; sid:5113001; rev:1;)
